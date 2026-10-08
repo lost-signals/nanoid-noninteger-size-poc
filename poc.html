@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>nanoid non-integer size PoC (browser build)</title>
+  <style>
+    body { font-family: ui-monospace, Menlo, Consolas, monospace; max-width: 860px; margin: 40px auto; padding: 0 16px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; }
+    .bad { color: #b00020; font-weight: bold; }
+    .ok { color: #1b5e20; }
+  </style>
+</head>
+<body>
+  <h1>nanoid non-integer size PoC (browser build)</h1>
+  <p>Calls <code>customAlphabet('0123456789abcdef')(16.5)</code> 1000 times per version using the browser build served by esm.sh.</p>
+  <table>
+    <thead><tr><th>Version</th><th>Sample output</th><th>Unique IDs / 1000</th><th>Result</th></tr></thead>
+    <tbody id="out"></tbody>
+  </table>
+  <script type="module">
+    const VERSIONS = ['5.1.7', '5.1.8', '5.1.16', '6.0.0']
+    const out = document.getElementById('out')
+
+    for (const v of VERSIONS) {
+      const { customAlphabet } = await import(`https://esm.sh/nanoid@${v}?target=es2022&browser`)
+      const gen = customAlphabet('0123456789abcdef')
+      const ids = new Set()
+      for (let i = 0; i < 1000; i++) ids.add(gen(16.5))
+      const sample = gen(16.5)
+      const vulnerable = ids.size === 1 && /^0+$/.test(sample)
+
+      const row = document.createElement('tr')
+      for (const text of [v, sample, String(ids.size)]) {
+        const td = document.createElement('td')
+        td.textContent = text
+        row.appendChild(td)
+      }
+      const res = document.createElement('td')
+      res.textContent = vulnerable ? 'VULNERABLE' : 'not affected'
+      res.className = vulnerable ? 'bad' : 'ok'
+      row.appendChild(res)
+      out.appendChild(row)
+    }
+  </script>
+</body>
+</html>

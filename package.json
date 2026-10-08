@@ -1,0 +1,17 @@
+{
+  "name": "nanoid-noninteger-size-poc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Proof of concept: nanoid 5.1.8 - 5.1.16 customAlphabet()/customRandom() returns predictable IDs for non-integer sizes",
+  "type": "module",
+  "scripts": {
+    "poc": "node poc.mjs"
+  },
+  "dependencies": {
+    "nanoid-5.1.7": "npm:nanoid@5.1.7",
+    "nanoid-5.1.8": "npm:nanoid@5.1.8",
+    "nanoid-5.1.16": "npm:nanoid@5.1.16",
+    "nanoid-6.0.0": "npm:nanoid@6.0.0"
+  },
+  "license": "MIT"
+}
